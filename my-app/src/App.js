@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 function Square({ value, onSquareClick }) {
   return (
@@ -8,8 +8,8 @@ function Square({ value, onSquareClick }) {
   );
 }
 
-function Board({ isXNext, squares, onPlay }) {
-  //クリックイベント
+function Board({ nextPlayer, squares, onPlay }) {
+  // クリックイベント
   const handleSquareClick = (y, x) => {
     const newSquares = squares.map(row => [...row]);
     // 置いた位置が既に埋まっているか、勝者が存在している場合は何もしない
@@ -17,7 +17,7 @@ function Board({ isXNext, squares, onPlay }) {
       return;
     }
     // ステータスの反映
-    newSquares[y][x] = isXNext ? 'X' : 'O';
+    newSquares[y][x] = nextPlayer;
     onPlay(newSquares);
   };
 
@@ -27,7 +27,7 @@ function Board({ isXNext, squares, onPlay }) {
   if (winner) {
     status = 'Winner: ' + winner;
   } else {
-    status = 'Next player: ' + (isXNext ? 'X' : 'O');
+    status = 'Next player: ' + nextPlayer;
   }
 
   return (
@@ -46,17 +46,24 @@ function Board({ isXNext, squares, onPlay }) {
 
 export default function GameState() {
   const [squares, setSquares] = useState(Array(3).fill(Array(3).fill(null)));
-  const [isXNext, setIsXNext] = useState(true);
+  const [nextPlayerID, setNextPlayerID] = useState(0);
+  const playerArray = useMemo(() => ['X', 'O'], []);
+  const [nextPlayer, setNextPlayer] = useState(playerArray[nextPlayerID]);
+
+  // playerIDに応じて、nextPlayerを切り替える
+  useEffect(() => {
+    setNextPlayer(playerArray[nextPlayerID]);
+  }, [nextPlayerID, playerArray]);
 
   // ステータス反映
   const handlePlay = (newSquares) => {
     setSquares(newSquares);
-    setIsXNext(!isXNext);
+    setNextPlayerID((nextPlayerID + 1) % playerArray.length); // 次のplayerIDをセット
   };
 
   return (
     <div>
-      <Board isXNext={isXNext} squares={squares} onPlay={handlePlay} />
+      <Board nextPlayer={nextPlayer} squares={squares} onPlay={handlePlay} />
       <GenerateArray setSquares={setSquares} />
     </div>
   );
