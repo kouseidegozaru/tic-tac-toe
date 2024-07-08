@@ -93,6 +93,65 @@ function GenerateArray({ setSquares }) {
   );
 }
 
-function calculateWinner(squares) {
-  // TODO: 勝利判定の実装
+//勝利判定
+const calculateWinner = (squares) => {
+  const size = squares.length;
+
+  // 対角線上が同じ値かどうか
+  let isWinning = true;
+  let currentPlayer = squares[0][0];
+  for (let i = 0; i < size; i++) {
+    if (squares[i][i] !== currentPlayer || currentPlayer == null) {
+      isWinning = false;
+      break;
+    }
+  }
+  if (isWinning) {
+    return currentPlayer;
+  }
+
+  // 反対側の対角線上が同じ値かどうか
+  isWinning = true;
+  currentPlayer = squares[0][size - 1];
+  for (let i = 0; i < size; i++) {
+    if (squares[i][size - i - 1] !== currentPlayer || currentPlayer == null) {
+      isWinning = false;
+      break;
+    }
+  }
+  if (isWinning) {
+    return currentPlayer;
+  }
+
+  // 縦か横の値が同じかチェック
+for (let row = 0; row < size; row++) {
+  // 横のチェック
+  isWinning = true;
+  currentPlayer = squares[row][0];
+  for (let col = 0; col < size; col++) {
+    if (squares[row][col] !== currentPlayer || currentPlayer == null) {
+      isWinning = false;
+      break;
+    }
+  }
+  if (isWinning) {
+    return currentPlayer;
+  }
+  
+  // 縦のチェック
+  isWinning = true;
+  currentPlayer = squares[0][row];
+  for (let col = 0; col < size; col++) {
+    if (squares[col][row] !== currentPlayer || currentPlayer == null) {
+      isWinning = false;
+      break;
+    }
+  }
+  if (isWinning) {
+    return currentPlayer;
+  }
 }
+
+  return null;
+}
+
