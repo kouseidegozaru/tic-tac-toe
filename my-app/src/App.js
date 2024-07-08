@@ -9,15 +9,19 @@ function Square({ value, onSquareClick }) {
 }
 
 function Board({ isXNext, squares, onPlay }) {
+  //クリックイベント
   const handleSquareClick = (y, x) => {
     const newSquares = squares.map(row => [...row]);
+    // 置いた位置が既に埋まっているか、勝者が存在している場合は何もしない
     if (newSquares[y][x] || calculateWinner(newSquares)) {
       return;
     }
+    // ステータスの反映
     newSquares[y][x] = isXNext ? 'X' : 'O';
     onPlay(newSquares);
   };
 
+  // 勝者が存在するか確認
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
@@ -44,6 +48,7 @@ export default function GameState() {
   const [squares, setSquares] = useState(Array(3).fill(Array(3).fill(null)));
   const [isXNext, setIsXNext] = useState(true);
 
+  // ステータス反映
   const handlePlay = (newSquares) => {
     setSquares(newSquares);
     setIsXNext(!isXNext);
@@ -62,8 +67,9 @@ function GenerateArray({ setSquares }) {
 
   const handleClick = () => {
     const size = parseInt(value, 10);
+    // 0以下、非数ではない場合に生成する
     if (!isNaN(size) && size > 0) {
-      const newSquares = Array(size).fill().map(() => Array(size).fill(null));
+      const newSquares = Array(size).fill().map(() => Array(size).fill(null));// 二次元配列
       setSquares(newSquares);
     }
   };
@@ -75,7 +81,7 @@ function GenerateArray({ setSquares }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <button onClick={handleClick}>値を取得</button>
+      <button onClick={handleClick}>生成</button>
     </div>
   );
 }
